@@ -2,7 +2,10 @@ package com.prison.controller;
 
 import com.prison.model.Inmate;
 import com.prison.model.MedicalCheckup;
+import com.prison.util.BackgroundLoader;
 import com.prison.util.Database;
+import com.prison.util.UiPerformanceUtil;
+import com.prison.util.WindowManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -33,7 +36,6 @@ public class MedicalCheckupController {
     
     @FXML
     public void initialize() {
-        inmateCombo.setItems(FXCollections.observableArrayList(database.getAllInmates()));
         checkupDatePicker.setValue(LocalDate.now());
         
         // Initialize table columns
@@ -43,12 +45,34 @@ public class MedicalCheckupController {
         diagnosisColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosis"));
         treatmentColumn.setCellValueFactory(new PropertyValueFactory<>("treatment"));
         doctorColumn.setCellValueFactory(new PropertyValueFactory<>("doctorName"));
-        
+
+        UiPerformanceUtil.optimizeTableScrolling(checkupsTable);
+        UiPerformanceUtil.enableBufferedRendering(inmateCombo, checkupsTable);
+
+        loadInmates();
         loadCheckups();
+    }
+
+    private void loadInmates() {
+        BackgroundLoader.loadAsync(
+            database::getAllInmates,
+            inmates -> inmateCombo.setItems(FXCollections.observableArrayList(inmates)),
+            error -> {
+                statusLabel.setText("Failed to load inmate names: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     private void loadCheckups() {
-        checkupsTable.setItems(FXCollections.observableArrayList(database.getAllMedicalCheckups()));
+        BackgroundLoader.loadAsync(
+            database::getAllMedicalCheckups,
+            checkups -> checkupsTable.setItems(FXCollections.observableArrayList(checkups)),
+            error -> {
+                statusLabel.setText("Failed to load checkups: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     @FXML
@@ -104,6 +128,6 @@ public class MedicalCheckupController {
     @FXML
     private void goBack() {
         Stage stage = (Stage) inmateCombo.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

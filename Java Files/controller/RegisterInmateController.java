@@ -1,7 +1,10 @@
 package com.prison.controller;
 
 import com.prison.model.Inmate;
+import com.prison.util.ActivityLogService;
+import com.prison.util.BalanceUpdateBus;
 import com.prison.util.Database;
+import com.prison.util.WindowManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -45,9 +48,12 @@ public class RegisterInmateController {
             
             Inmate inmate = new Inmate(0, name, age, gender, crime, admissionDate, 
                                       releaseDate, "Active", cellNumber);
+            inmate.setBalance(Inmate.DEFAULT_STARTING_BALANCE);
             database.addInmate(inmate);
+            ActivityLogService.log("Inmate Registration", "New Inmate " + inmate.getName() + " Registered");
+            BalanceUpdateBus.publish();
             
-            statusLabel.setText("Inmate registered successfully! ID: " + inmate.getInmateId());
+            statusLabel.setText("Inmate registered successfully! ID: " + inmate.getInmateId() + " | Starting wallet: $" + String.format("%.2f", inmate.getBalance()));
             statusLabel.setStyle("-fx-text-fill: green;");
             
             clearFields();
@@ -74,6 +80,6 @@ public class RegisterInmateController {
     @FXML
     private void goBack() {
         Stage stage = (Stage) nameField.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

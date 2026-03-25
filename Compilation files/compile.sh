@@ -2,7 +2,7 @@
 #!/bin/bash
 # Compile script for SDA (Prison Management System)
 
-echo "Compiling SDA Project..."
+echo "Compiling SE Project..."
 
 # Path to your JavaFX SDK
 PATH_TO_FX="/root/javafx-sdk-22.0.1/lib"

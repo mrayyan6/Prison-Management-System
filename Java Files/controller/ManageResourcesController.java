@@ -1,7 +1,9 @@
 package com.prison.controller;
 
 import com.prison.model.Resources;
+import com.prison.util.ActivityLogService;
 import com.prison.util.Database;
+import com.prison.util.WindowManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,6 +16,9 @@ public class ManageResourcesController {
     @FXML private ComboBox<String> categoryCombo;
     @FXML private TextField quantityField;
     @FXML private TextField locationField;
+    @FXML private TextField assignInmateIdField;
+    @FXML private TextField assignQuantityField;
+    @FXML private TextField assignedByField;
     
     @FXML private TableView<Resources> resourcesTable;
     @FXML private TableColumn<Resources, Integer> resourceIdColumn;
@@ -137,6 +142,42 @@ public class ManageResourcesController {
             statusLabel.setStyle("-fx-text-fill: red;");
         }
     }
+
+    @FXML
+    private void assignResource() {
+        if (selectedResource == null) {
+            statusLabel.setText("Select a resource first.");
+            statusLabel.setStyle("-fx-text-fill: red;");
+            return;
+        }
+
+        try {
+            int inmateId = Integer.parseInt(assignInmateIdField.getText().trim());
+            int qty = Integer.parseInt(assignQuantityField.getText().trim());
+            String assignedBy = assignedByField.getText().trim();
+
+            if (assignedBy.isEmpty()) {
+                statusLabel.setText("Enter assigned by name.");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
+            boolean success = database.assignResourceToInmate(selectedResource.getResourceId(), inmateId, qty, assignedBy);
+            if (!success) {
+                statusLabel.setText("Assignment failed. Check quantity or IDs.");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
+            ActivityLogService.log("Resource Assignment", "Inmate #" + inmateId + " assigned " + qty + " x " + selectedResource.getResourceName());
+            statusLabel.setText("Resource assigned successfully.");
+            statusLabel.setStyle("-fx-text-fill: green;");
+            loadResources();
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Invalid inmate ID or quantity.");
+            statusLabel.setStyle("-fx-text-fill: red;");
+        }
+    }
     
     @FXML
     private void clearFields() {
@@ -144,12 +185,15 @@ public class ManageResourcesController {
         categoryCombo.setValue(null);
         quantityField.clear();
         locationField.clear();
+        assignInmateIdField.clear();
+        assignQuantityField.clear();
+        assignedByField.clear();
         selectedResource = null;
     }
     
     @FXML
     private void goBack() {
         Stage stage = (Stage) resourceNameField.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

@@ -1,13 +1,19 @@
 package com.prison.controller;
 
 import com.prison.model.Inmate;
+import com.prison.util.ActivityLogService;
+import com.prison.util.BackgroundLoader;
 import com.prison.util.Database;
+import com.prison.util.SystemUpdateBus;
+import com.prison.util.UiPerformanceUtil;
+import com.prison.util.WindowManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class ReleaseInmateController {
     
@@ -35,6 +41,9 @@ public class ReleaseInmateController {
         admissionColumn.setCellValueFactory(new PropertyValueFactory<>("admissionDate"));
         releaseColumn.setCellValueFactory(new PropertyValueFactory<>("releaseDate"));
         cellColumn.setCellValueFactory(new PropertyValueFactory<>("cellNumber"));
+
+        UiPerformanceUtil.optimizeTableScrolling(eligibleInmatesTable);
+        UiPerformanceUtil.enableBufferedRendering(eligibleInmatesTable);
         
         loadEligibleInmates();
         
@@ -45,8 +54,14 @@ public class ReleaseInmateController {
     }
     
     private void loadEligibleInmates() {
-        eligibleInmatesTable.setItems(FXCollections.observableArrayList(
-            database.getEligibleInmatesForRelease()));
+        BackgroundLoader.loadAsync(
+            database::getAllActiveInmates,
+            inmates -> eligibleInmatesTable.setItems(FXCollections.observableArrayList(inmates)),
+            error -> {
+                statusLabel.setText("Failed to load eligible inmates: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     @FXML
@@ -79,16 +94,28 @@ public class ReleaseInmateController {
             statusLabel.setStyle("-fx-text-fill: red;");
             return;
         }
-        
+
+        ArrayList<String> adminNames = database.getStaffNamesByRole("Administrator","Admin");
+        if (!adminNames.contains(releasedBy)) {
+            statusLabel.setText("Only an Administrator can authorize the release!");
+            statusLabel.setStyle("-fx-text-fill: red;");
+            return;
+        }
+
+
+
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirm Release");
         confirmAlert.setHeaderText("Release Inmate");
         confirmAlert.setContentText("Are you sure you want to release " + selectedInmate.getName() + "?");
         
         if (confirmAlert.showAndWait().get() == ButtonType.OK) {
-            // Update inmate status
-            selectedInmate.setStatus("Released");
-            database.updateInmate(selectedInmate);
+            boolean archived = database.archiveAndReleaseInmate(selectedInmate, releasedBy, notes);
+            if (!archived) {
+                statusLabel.setText("Failed to archive and release inmate.");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
             
             Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
             successAlert.setTitle("Release Successful");
@@ -108,6 +135,10 @@ public class ReleaseInmateController {
             
             statusLabel.setText("Inmate released successfully!");
             statusLabel.setStyle("-fx-text-fill: green;");
+
+            ActivityLogService.log("Manual Release", "Inmate " + selectedInmate.getName() + " Released Early by Warden");
+
+            SystemUpdateBus.publish();
             
             loadEligibleInmates();
             releaseNotesArea.clear();
@@ -118,6 +149,6 @@ public class ReleaseInmateController {
     @FXML
     private void goBack() {
         Stage stage = (Stage) eligibleInmatesTable.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

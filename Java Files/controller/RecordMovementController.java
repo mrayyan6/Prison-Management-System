@@ -2,13 +2,19 @@ package com.prison.controller;
 
 import com.prison.model.Inmate;
 import com.prison.model.MovementRecord;
+import com.prison.util.BackgroundLoader;
 import com.prison.util.Database;
+import com.prison.util.SystemUpdateBus;
+import com.prison.util.UiPerformanceUtil;
+import com.prison.util.WindowManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class RecordMovementController {
     
@@ -17,6 +23,8 @@ public class RecordMovementController {
     @FXML private TextField toLocationField;
     @FXML private ComboBox<String> reasonCombo;
     @FXML private TextField authorizedByField;
+    @FXML private DatePicker movementDatePicker;
+    @FXML private TextField movementTimeField;
     
     @FXML private TableView<MovementRecord> movementsTable;
     @FXML private TableColumn<MovementRecord, Integer> movementIdColumn;
@@ -32,10 +40,10 @@ public class RecordMovementController {
     
     @FXML
     public void initialize() {
-        inmateCombo.setItems(FXCollections.observableArrayList(database.getAllInmates()));
         reasonCombo.getItems().addAll("Cell Transfer", "Medical Visit", "Court Appearance", 
                                      "Visitation", "Work Assignment", "Recreation", 
                                      "Meal Time", "Other");
+        movementDatePicker.setValue(LocalDate.now());
         
         // Initialize table columns
         movementIdColumn.setCellValueFactory(new PropertyValueFactory<>("movementId"));
@@ -44,7 +52,11 @@ public class RecordMovementController {
         toColumn.setCellValueFactory(new PropertyValueFactory<>("toLocation"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("movementTime"));
         reasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
-        
+
+        UiPerformanceUtil.optimizeTableScrolling(movementsTable);
+        UiPerformanceUtil.enableBufferedRendering(inmateCombo, movementsTable);
+
+        loadInmates();
         loadMovements();
         
         // Auto-populate from location based on selected inmate's current cell
@@ -55,9 +67,27 @@ public class RecordMovementController {
             }
         });
     }
+
+    private void loadInmates() {
+        BackgroundLoader.loadAsync(
+            database::getAllInmates,
+            inmates -> inmateCombo.setItems(FXCollections.observableArrayList(inmates)),
+            error -> {
+                statusLabel.setText("Failed to load inmate names: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
+    }
     
     private void loadMovements() {
-        movementsTable.setItems(FXCollections.observableArrayList(database.getAllMovementRecords()));
+        BackgroundLoader.loadAsync(
+            database::getAllMovementRecords,
+            movements -> movementsTable.setItems(FXCollections.observableArrayList(movements)),
+            error -> {
+                statusLabel.setText("Failed to load movement records: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     @FXML
@@ -68,13 +98,39 @@ public class RecordMovementController {
             String toLocation = toLocationField.getText();
             String reason = reasonCombo.getValue();
             String authorizedBy = authorizedByField.getText();
+            LocalDate movementDate = movementDatePicker.getValue();
+            String movementTime = movementTimeField.getText().trim();
             
             if (selectedInmate == null || fromLocation.isEmpty() || toLocation.isEmpty() || 
-                reason == null || authorizedBy.isEmpty()) {
+                reason == null || authorizedBy.isEmpty() || movementDate == null || movementTime.isEmpty()) {
                 statusLabel.setText("Please fill all fields!");
                 statusLabel.setStyle("-fx-text-fill: red;");
                 return;
             }
+
+            LocalTime parsedTime;
+            try {
+                parsedTime = LocalTime.parse(movementTime);
+            } catch (Exception ex) {
+                statusLabel.setText("Invalid time format. Use HH:mm");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
+            LocalDateTime plannedTime = LocalDateTime.of(movementDate, parsedTime);
+
+            if (database.isMovementTimeOccupied(plannedTime, selectedInmate.getInmateId())) {
+                statusLabel.setText("High Risk: Personnel Shortage. Movement slot already occupied.");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
+            if ("Court Appearance".equalsIgnoreCase(reason) && database.hasCourtScheduleConflict(plannedTime, selectedInmate.getInmateId())) {
+                statusLabel.setText("High Risk: Court schedule requires 1-hour buffer.");
+                statusLabel.setStyle("-fx-text-fill: red;");
+                return;
+            }
+
             if (selectedInmate != null && "released".equalsIgnoreCase(selectedInmate.getStatus()))
             {
                 statusLabel.setText("This inmate has been released and cannot be moved.");
@@ -83,7 +139,7 @@ public class RecordMovementController {
             }            
             MovementRecord movement = new MovementRecord(0, selectedInmate.getInmateId(), 
                                                         fromLocation, toLocation, 
-                                                        LocalDateTime.now(), reason, authorizedBy);
+                                                        plannedTime, reason, authorizedBy);
             database.addMovementRecord(movement);
             
             // Update inmate's cell number if it's a cell transfer
@@ -95,6 +151,7 @@ public class RecordMovementController {
             statusLabel.setText("Movement recorded successfully! Movement ID: " + movement.getMovementId());
             statusLabel.setStyle("-fx-text-fill: green;");
             
+            SystemUpdateBus.publish();
             loadMovements();
             clearFields();
             
@@ -111,11 +168,13 @@ public class RecordMovementController {
         toLocationField.clear();
         reasonCombo.setValue(null);
         authorizedByField.clear();
+        movementDatePicker.setValue(LocalDate.now());
+        movementTimeField.clear();
     }
     
     @FXML
     private void goBack() {
         Stage stage = (Stage) inmateCombo.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

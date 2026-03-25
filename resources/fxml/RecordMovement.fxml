@@ -25,6 +25,12 @@
         
         <Label text="Authorized By:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
         <TextField fx:id="authorizedByField" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="300"/>
+
+        <Label text="Movement Date:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <DatePicker fx:id="movementDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="300"/>
+
+        <Label text="Movement Time (HH:mm):" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <TextField fx:id="movementTimeField" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="300" promptText="12:00"/>
     </GridPane>
     
     <HBox spacing="10" alignment="CENTER">

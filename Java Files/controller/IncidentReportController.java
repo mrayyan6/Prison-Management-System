@@ -2,7 +2,12 @@ package com.prison.controller;
 
 import com.prison.model.Inmate;
 import com.prison.model.IncidentReport;
+import com.prison.util.ActivityLogService;
+import com.prison.util.BackgroundLoader;
 import com.prison.util.Database;
+import com.prison.util.SystemUpdateBus;
+import com.prison.util.UiPerformanceUtil;
+import com.prison.util.WindowManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -31,7 +36,6 @@ public class IncidentReportController {
     
     @FXML
     public void initialize() {
-        inmateCombo.setItems(FXCollections.observableArrayList(database.getAllInmates()));
         incidentTypeCombo.getItems().addAll("Fight", "Misconduct", "Rule Violation", 
                                            "Theft", "Damage to Property", "Medical Emergency", 
                                            "Security Breach", "Other");
@@ -42,12 +46,34 @@ public class IncidentReportController {
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("incidentType"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("incidentDate"));
         reportedByColumn.setCellValueFactory(new PropertyValueFactory<>("reportedBy"));
-        
+
+        UiPerformanceUtil.optimizeTableScrolling(reportsTable);
+        UiPerformanceUtil.enableBufferedRendering(inmateCombo, reportsTable);
+
+        loadInmates();
         loadReports();
+    }
+
+    private void loadInmates() {
+        BackgroundLoader.loadAsync(
+            database::getAllInmates,
+            inmates -> inmateCombo.setItems(FXCollections.observableArrayList(inmates)),
+            error -> {
+                statusLabel.setText("Failed to load inmate names: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     private void loadReports() {
-        reportsTable.setItems(FXCollections.observableArrayList(database.getAllIncidentReports()));
+        BackgroundLoader.loadAsync(
+            database::getAllIncidentReports,
+            reports -> reportsTable.setItems(FXCollections.observableArrayList(reports)),
+            error -> {
+                statusLabel.setText("Failed to load reports: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     @FXML
@@ -77,10 +103,12 @@ public class IncidentReportController {
                                                        description, reportedBy);
             report.setActionTaken(actionTaken);
             database.addIncidentReport(report);
+            ActivityLogService.log("Incident Report", "Inmate " + selectedInmate.getName() + " incident reported: " + incidentType);
             
             statusLabel.setText("Incident report saved successfully! Report ID: " + report.getReportId());
             statusLabel.setStyle("-fx-text-fill: green;");
             
+            SystemUpdateBus.publish();
             loadReports();
             clearFields();
             
@@ -102,6 +130,6 @@ public class IncidentReportController {
     @FXML
     private void goBack() {
         Stage stage = (Stage) inmateCombo.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

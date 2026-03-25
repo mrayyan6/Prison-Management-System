@@ -22,11 +22,21 @@
         
         <Label text="Location:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
         <TextField fx:id="locationField" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="250"/>
+
+        <Label text="Assign To Inmate ID:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <TextField fx:id="assignInmateIdField" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="250"/>
+
+        <Label text="Assign Qty:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <TextField fx:id="assignQuantityField" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="250"/>
+
+        <Label text="Assigned By:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <TextField fx:id="assignedByField" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="250"/>
     </GridPane>
     
     <HBox spacing="10" alignment="CENTER">
         <Button text="Add Resource" onAction="#addResource" prefWidth="120" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
         <Button text="Update Selected" onAction="#updateResource" prefWidth="120" style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+        <Button text="Assign Resource" onAction="#assignResource" prefWidth="120" style="-fx-background-color: #1d4ed8; -fx-text-fill: white;"/>
         <Button text="Clear" onAction="#clearFields" prefWidth="120"/>
         <Button text="Back" onAction="#goBack" prefWidth="120"/>
     </HBox>

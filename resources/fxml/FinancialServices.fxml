@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.prison.controller.FinancialServicesController"
+      spacing="14" style="-fx-padding: 20; -fx-background-color: #0f172a;">
+
+    <Label text="Financial Services" style="-fx-text-fill: #f8fafc; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+    <Label text="View inmate balances and deposit funds." style="-fx-text-fill: #cbd5e1;"/>
+
+    <HBox spacing="10">
+        <TextField fx:id="inmateIdSearchField" promptText="Search inmate by ID" prefWidth="220"/>
+        <Button text="Find Inmate" onAction="#searchInmateById"
+                style="-fx-background-color: #1d4ed8; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Label fx:id="selectedInmateLabel" text="Selected Inmate: None" style="-fx-text-fill: #e2e8f0;"/>
+    </HBox>
+
+    <Label fx:id="currentBalanceLabel" text="Current Balance: --" style="-fx-text-fill: #f8fafc; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <ScrollPane fx:id="balancesScrollPane" fitToWidth="true" prefHeight="340" style="-fx-background: #111827;">
+        <content>
+            <TableView fx:id="balancesTable" prefHeight="320" style="-fx-background-color: #111827;">
+                <columns>
+                    <TableColumn fx:id="inmateIdColumn" text="Inmate ID" prefWidth="120"/>
+                    <TableColumn fx:id="inmateNameColumn" text="Inmate Name" prefWidth="260"/>
+                    <TableColumn fx:id="balanceColumn" text="Balance" prefWidth="160"/>
+                </columns>
+            </TableView>
+        </content>
+    </ScrollPane>
+
+    <HBox spacing="10">
+        <TextField fx:id="depositAmountField" promptText="Deposit amount" prefWidth="180"/>
+        <Button text="Deposit" onAction="#depositFunds"
+                style="-fx-background-color: #0f766e; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Refresh" onAction="#refreshBalances"/>
+        <Button text="Back" onAction="#goBack"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" style="-fx-text-fill: #cbd5e1; -fx-font-weight: bold;"/>
+</VBox>

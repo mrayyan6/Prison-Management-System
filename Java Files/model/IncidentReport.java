@@ -10,6 +10,7 @@ public class IncidentReport {
     private String description;
     private String reportedBy;
     private String actionTaken;
+    private String inmateReleaseDate;
 
     public IncidentReport() {}
 
@@ -44,6 +45,9 @@ public class IncidentReport {
 
     public String getActionTaken() { return actionTaken; }
     public void setActionTaken(String actionTaken) { this.actionTaken = actionTaken; }
+
+    public String getInmateReleaseDate() { return inmateReleaseDate; }
+    public void setInmateReleaseDate(String inmateReleaseDate) { this.inmateReleaseDate = inmateReleaseDate; }
 
     @Override
     public String toString() {

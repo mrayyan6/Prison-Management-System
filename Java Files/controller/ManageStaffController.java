@@ -2,6 +2,7 @@ package com.prison.controller;
 
 import com.prison.model.Staff;
 import com.prison.util.Database;
+import com.prison.util.WindowManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -160,6 +161,6 @@ public class ManageStaffController {
     @FXML
     private void goBack() {
         Stage stage = (Stage) staffTable.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

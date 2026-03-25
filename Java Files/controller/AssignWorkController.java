@@ -2,7 +2,10 @@ package com.prison.controller;
 
 import com.prison.model.Inmate;
 import com.prison.model.WorkAssignment;
+import com.prison.util.BackgroundLoader;
 import com.prison.util.Database;
+import com.prison.util.UiPerformanceUtil;
+import com.prison.util.WindowManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -31,8 +34,6 @@ public class AssignWorkController {
     
     @FXML
     public void initialize() {
-        // Initialize combo boxes
-        inmateCombo.setItems(FXCollections.observableArrayList(database.getAllInmates()));
         workTypeCombo.getItems().addAll("Kitchen", "Laundry", "Maintenance", "Cleaning", 
                                        "Library", "Garden", "Workshop", "Office Work");
         assignedDatePicker.setValue(LocalDate.now());
@@ -44,12 +45,34 @@ public class AssignWorkController {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("assignedDate"));
         supervisorColumn.setCellValueFactory(new PropertyValueFactory<>("supervisorName"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        
+
+        UiPerformanceUtil.optimizeTableScrolling(assignmentsTable);
+        UiPerformanceUtil.enableBufferedRendering(inmateCombo, assignmentsTable);
+
+        loadInmates();
         loadAssignments();
+    }
+
+    private void loadInmates() {
+        BackgroundLoader.loadAsync(
+            database::getAllInmates,
+            inmates -> inmateCombo.setItems(FXCollections.observableArrayList(inmates)),
+            error -> {
+                statusLabel.setText("Failed to load inmate names: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     private void loadAssignments() {
-        assignmentsTable.setItems(FXCollections.observableArrayList(database.getAllWorkAssignments()));
+        BackgroundLoader.loadAsync(
+            database::getAllWorkAssignments,
+            assignments -> assignmentsTable.setItems(FXCollections.observableArrayList(assignments)),
+            error -> {
+                statusLabel.setText("Failed to load assignments: " + error.getMessage());
+                statusLabel.setStyle("-fx-text-fill: red;");
+            }
+        );
     }
     
     @FXML
@@ -101,6 +124,6 @@ public class AssignWorkController {
     @FXML
     private void goBack() {
         Stage stage = (Stage) inmateCombo.getScene().getWindow();
-        stage.close();
+        WindowManager.showDashboardForCurrentUser(stage, getClass());
     }
 }

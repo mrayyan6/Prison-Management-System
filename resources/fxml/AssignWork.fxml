@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.prison.controller.AssignWorkController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Assign Work to Inmate" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
+    <GridPane hgap="10" vgap="10">
+        <Label text="Select Inmate:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <ComboBox fx:id="inmateCombo" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="300"/>
+        
+        <Label text="Work Type:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="workTypeCombo" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="300"/>
+        
+        <Label text="Assigned Date:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <DatePicker fx:id="assignedDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="300"/>
+        
+        <Label text="Supervisor:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="supervisorField" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="300"/>
+    </GridPane>
+    
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Assign Work" onAction="#assignWork" prefWidth="120" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+        <Button text="Clear" onAction="#clearFields" prefWidth="120"/>
+        <Button text="Back" onAction="#goBack" prefWidth="120"/>
+    </HBox>
+    
+    <Separator/>
+    
+    <Label text="Current Work Assignments" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    
+    <TableView fx:id="assignmentsTable" prefHeight="250">
+        <columns>
+            <TableColumn fx:id="assignmentIdColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="inmateIdColumn" text="Inmate ID" prefWidth="80"/>
+            <TableColumn fx:id="workTypeColumn" text="Work Type" prefWidth="150"/>
+            <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+            <TableColumn fx:id="supervisorColumn" text="Supervisor" prefWidth="120"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+        </columns>
+    </TableView>
+    
+    <Label fx:id="statusLabel" style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+</VBox>

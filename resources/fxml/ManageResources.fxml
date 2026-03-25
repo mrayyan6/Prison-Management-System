@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.prison.controller.ManageResourcesController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Manage Resources" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
+    <GridPane hgap="10" vgap="10">
+        <Label text="Resource Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="resourceNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250"/>
+        
+        <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="categoryCombo" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="250"/>
+        
+        <Label text="Quantity:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="quantityField" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="250"/>
+        
+        <Label text="Location:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="locationField" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="250"/>
+    </GridPane>
+    
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Add Resource" onAction="#addResource" prefWidth="120" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+        <Button text="Update Selected" onAction="#updateResource" prefWidth="120" style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+        <Button text="Clear" onAction="#clearFields" prefWidth="120"/>
+        <Button text="Back" onAction="#goBack" prefWidth="120"/>
+    </HBox>
+    
+    <Separator/>
+    
+    <Label text="Resource Inventory" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    
+    <TableView fx:id="resourcesTable" prefHeight="250">
+        <columns>
+            <TableColumn fx:id="resourceIdColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="150"/>
+            <TableColumn fx:id="categoryColumn" text="Category" prefWidth="120"/>
+            <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="80"/>
+            <TableColumn fx:id="locationColumn" text="Location" prefWidth="120"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+        </columns>
+    </TableView>
+    
+    <Label fx:id="statusLabel" style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+</VBox>

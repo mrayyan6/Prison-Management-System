@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.prison.controller.MainMenuController"
+            style="-fx-background-color: linear-gradient(to bottom, #1e3c72, #2a5298, #7e22ce);">
+    
+    <top>
+        <VBox alignment="CENTER" spacing="8" style="-fx-padding: 25 20 20 20;">
+            <effect>
+                <DropShadow color="#000000" radius="15" spread="0.3"/>
+            </effect>
+            
+            <!-- Main Title -->
+            <Label text="🏛️ PRISON MANAGEMENT SYSTEM" textFill="white" style="-fx-font-weight: bold;">
+                <font>
+                    <Font name="Arial Bold" size="28"/>
+                </font>
+                <effect>
+                    <DropShadow color="#000000" radius="8" spread="0.5"/>
+                </effect>
+            </Label>
+            
+            <!-- Subtitle -->
+            <Label text="Integrated Security &amp; Management Solution" textFill="#e0e7ff">
+                <font>
+                    <Font name="Arial" size="14"/>
+                </font>
+            </Label>
+            
+            <!-- Separator Line -->
+            <Region prefHeight="2" style="-fx-background-color: rgba(255,255,255,0.3); -fx-pref-width: 500;"/>
+        </VBox>
+    </top>
+    
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background: transparent; -fx-background-color: transparent;">
+            <VBox alignment="CENTER" spacing="15" style="-fx-padding: 15;">
+                
+                <!-- Row 1 -->
+                <HBox spacing="15" alignment="CENTER">
+                    <!-- Register Inmate Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #667eea, #764ba2); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="👤" style="-fx-font-size: 32;"/>
+                        <Label text="Register New Inmate" textFill="white" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openRegisterInmate" 
+                                style="-fx-background-color: white; -fx-text-fill: #667eea; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                    
+                    <!-- Manage Staff Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #f093fb, #f5576c); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="👥" style="-fx-font-size: 32;"/>
+                        <Label text="Manage Staff Records" textFill="white" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openManageStaff" 
+                                style="-fx-background-color: white; -fx-text-fill: #f5576c; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                    
+                    <!-- Assign Work Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #4facfe, #00f2fe); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="💼" style="-fx-font-size: 32;"/>
+                        <Label text="Assign Work to Inmate" textFill="white" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openAssignWork" 
+                                style="-fx-background-color: white; -fx-text-fill: #00f2fe; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                </HBox>
+                
+                <!-- Row 2 -->
+                <HBox spacing="15" alignment="CENTER">
+                    <!-- Manage Resources Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #43e97b, #38f9d7); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="📦" style="-fx-font-size: 32;"/>
+                        <Label text="Manage Resources" textFill="white" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openManageResources" 
+                                style="-fx-background-color: white; -fx-text-fill: #43e97b; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                    
+                    <!-- Medical Checkup Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #fa709a, #fee140); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="⚕️" style="-fx-font-size: 32;"/>
+                        <Label text="Medical Checkup" textFill="white" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openMedicalCheckup" 
+                                style="-fx-background-color: white; -fx-text-fill: #fa709a; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                    
+                    <!-- Monitor Attendance Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #30cfd0, #330867); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="📊" style="-fx-font-size: 32;"/>
+                        <Label text="Monitor Attendance" textFill="white" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openMonitorAttendance" 
+                                style="-fx-background-color: white; -fx-text-fill: #330867; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                </HBox>
+                
+                <!-- Row 3 -->
+                <HBox spacing="15" alignment="CENTER">
+                    <!-- Incident Report Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #ff6b6b, #ee5a6f); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="⚠️" style="-fx-font-size: 32;"/>
+                        <Label text="Record Incident Report" textFill="white" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openIncidentReport" 
+                                style="-fx-background-color: white; -fx-text-fill: #ff6b6b; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                    
+                    <!-- Record Movement Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #a8edea, #fed6e3); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="🚶" style="-fx-font-size: 32;"/>
+                        <Label text="Record Movement" textFill="#333333" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openRecordMovement" 
+                                style="-fx-background-color: #333333; -fx-text-fill: white; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                    
+                    <!-- Release Inmate Card -->
+                    <VBox alignment="CENTER" spacing="8" 
+                          style="-fx-background-color: linear-gradient(to bottom, #ffecd2, #fcb69f); 
+                                 -fx-background-radius: 12; -fx-padding: 18; -fx-pref-width: 240; -fx-pref-height: 130;
+                                 -fx-cursor: hand;"
+                          onMouseEntered="#onCardHover" onMouseExited="#onCardExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="8" spread="0.2"/>
+                        </effect>
+                        <Label text="🚪" style="-fx-font-size: 32;"/>
+                        <Label text="Release Inmate" textFill="#333333" textAlignment="CENTER" wrapText="true"
+                               style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                        <Button text="Open" onAction="#openReleaseInmate" 
+                                style="-fx-background-color: #333333; -fx-text-fill: white; 
+                                       -fx-background-radius: 15; -fx-padding: 6 18; -fx-font-weight: bold; -fx-font-size: 12;
+                                       -fx-cursor: hand;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+    
+    <bottom>
+        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 15;">
+            <Button text="❌ Exit Application" onAction="#exitApplication" 
+                    style="-fx-background-color: #ff4757; -fx-text-fill: white; 
+                           -fx-background-radius: 20; -fx-padding: 10 25; -fx-font-size: 13; -fx-font-weight: bold;
+                           -fx-cursor: hand;">
+                <effect>
+                    <DropShadow color="#000000" radius="5" spread="0.3"/>
+                </effect>
+            </Button>
+        </HBox>
+    </bottom>
+</BorderPane>

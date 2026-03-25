@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.prison.controller.RegisterInmateController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Register New Inmate" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
+    <GridPane hgap="10" vgap="10">
+        <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250"/>
+        
+        <Label text="Age:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="ageField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        
+        <Label text="Gender:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="genderCombo" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="250"/>
+        
+        <Label text="Crime:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="crimeField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        
+        <Label text="Admission Date:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <DatePicker fx:id="admissionDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="250"/>
+        
+        <Label text="Release Date:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <DatePicker fx:id="releaseDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="250"/>
+        
+        <Label text="Cell Number:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <TextField fx:id="cellNumberField" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+    </GridPane>
+    
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Register" onAction="#registerInmate" prefWidth="120" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+        <Button text="Clear" onAction="#clearFields" prefWidth="120"/>
+        <Button text="Back" onAction="#goBack" prefWidth="120"/>
+    </HBox>
+    
+    <Label fx:id="statusLabel" style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+</VBox>

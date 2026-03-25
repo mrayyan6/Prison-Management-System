@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.prison.controller.ReleaseInmateController"
+      spacing="15" style="-fx-padding: 20;">
+    
+    <Label text="Release Inmate" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    
+    <Label text="Eligible Inmates for Release" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+    
+    <TableView fx:id="eligibleInmatesTable" prefHeight="200">
+        <columns>
+            <TableColumn fx:id="inmateIdColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="150"/>
+            <TableColumn fx:id="crimeColumn" text="Crime" prefWidth="120"/>
+            <TableColumn fx:id="admissionColumn" text="Admission" prefWidth="100"/>
+            <TableColumn fx:id="releaseColumn" text="Release Date" prefWidth="100"/>
+            <TableColumn fx:id="cellColumn" text="Cell" prefWidth="80"/>
+        </columns>
+    </TableView>
+    
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Refresh List" onAction="#refreshList" prefWidth="120" style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+        <Button text="Release Selected" onAction="#releaseInmate" prefWidth="150" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+        <Button text="Back" onAction="#goBack" prefWidth="120"/>
+    </HBox>
+    
+    <Separator/>
+    
+    <VBox spacing="10" style="-fx-border-color: #bdc3c7; -fx-border-width: 1; -fx-padding: 15;">
+        <Label text="Release Details" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        
+        <GridPane hgap="10" vgap="10">
+            <Label text="Release Notes:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextArea fx:id="releaseNotesArea" GridPane.columnIndex="1" GridPane.rowIndex="0" 
+                     prefWidth="350" prefHeight="100"/>
+            
+            <Label text="Released By:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="releasedByField" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="350"/>
+        </GridPane>
+    </VBox>
+    
+    <Label fx:id="statusLabel" style="-fx-text-fill: green; -fx-font-weight: bold;"/>
+</VBox>
